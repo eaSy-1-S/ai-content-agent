@@ -1,0 +1,653 @@
+app:
+  description: 根据书籍信息自动生成适合微信公众号发布的读书推荐推文，包括标题、摘要、正文、封面文案和互动问题。
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: workflow
+  name: 读书公众号推文生成器
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/deepseek:0.0.17@f7a5c1d222d17ee419b17a80d6e4923838fe93788dc724a3af73fbc6990b3a32
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: llm
+      id: 1782657263281-source-1782657765695-target
+      source: '1782657263281'
+      sourceHandle: source
+      target: '1782657765695'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1782657765695--1782658797818-target
+      source: '1782657765695'
+      sourceHandle: source
+      target: '1782658797818'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: 1782658797818-source-1782659387012-target
+      source: '1782658797818'
+      sourceHandle: source
+      target: '1782659387012'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1782659387012-source-1782658294078-target
+      source: '1782659387012'
+      sourceHandle: source
+      target: '1782658294078'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables:
+        - default: ''
+          hide: false
+          hint: ''
+          label: 书籍信息
+          max_length: 5000
+          options: []
+          placeholder: ''
+          required: true
+          type: paragraph
+          variable: book_info
+      height: 108
+      id: '1782657263281'
+      position:
+        x: 0
+        y: -1.4285714285714448
+      positionAbsolute:
+        x: 0
+        y: -1.4285714285714448
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            max_tokens: 3000
+            temperature: 0.7
+            top_p: 0.91
+          mode: chat
+          name: deepseek-v4-flash
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: 8a96a22f-369c-4455-97be-750b37eb78c5
+          role: system
+          text: '你是一名微信公众号读书号编辑，主要为大学生、应届生和职场新人撰写实用型读书推荐文章。
+
+
+            你的任务是：根据用户提供的书籍信息，生成一篇适合微信公众号发布的读书推荐推文。
+
+
+            【账号定位】
+
+            面向大学生、应届生和职场新人的实用读书推荐号。每篇文章用一本书回应一个具体问题，例如迷茫、焦虑、拖延、表达、求职、赚钱、职业选择、认知提升。
+
+
+            【写作目标】
+
+            这篇文章不是书籍百科，也不是读书笔记，而是一篇“问题解决型读书推荐文”。
+
+            你要让读者看完后觉得：
+
+            1. 这个问题我也有；
+
+            2. 这本书确实和我有关；
+
+            3. 文章里至少有 1-2 个观点能立刻用到生活、学习或职场中。
+
+
+            【写作风格】
+
+            1. 语言自然，有公众号阅读节奏，不要像论文、百科或广告。
+
+            2. 多写具体生活场景，少写抽象概念。
+
+            3. 每个观点都要结合大学、求职、职场新人、人际关系中的具体场景解释。
+
+            4. 不要编造书中不存在的情节、案例、作者经历、销量、奖项、读者反馈。
+
+            5. 不要大段引用原书内容。
+
+            6. 不要使用夸张表达，例如“彻底改变人生”“必读神书”“看完逆袭”“封神之作”“人生答案”。
+
+            7. 不要输出虚假的亲身经历，例如“我读完这本书后如何如何”。
+
+            8. 字数控制在 1200-1600 字。
+
+            9.不要使用“小王”“小李”“小明”等模板化人物举例，优先使用“你可能遇到过这样的情况”这类第二人称场景。
+
+
+            【内容要求】
+
+            文章必须围绕用户提供的“推荐角度”展开。
+
+            如果输入中有“标题方向”，标题要围绕这个方向优化。
+
+            如果输入中有“核心关键词”，正文中要自然融入，但不要机械堆砌。
+
+
+            【书籍推荐露出规则】
+
+            当前推荐书籍是：{{book_name}}
+
+            作者是：{{author}}
+
+            请确保文章始终围绕当前书籍展开，严禁写成其他书籍，严禁混入其他书籍的核心观点。
+
+            正文中必须自然出现书名，规则如下：
+
+            【最终标题】中优先包含书名，例如：
+
+            读完《{{book_name}}》，我终于明白……
+
+            《{{book_name}}》：……
+
+            如果你最近……，建议读读《{{book_name}}》
+
+            如果标题为了传播效果没有直接写书名，那么【公众号正文】前 150 字内必须自然出现完整书名。
+
+            正文开头不能一直用“这本书”“它”“这本作品”代替书名。第一次提到时必须写完整书名：
+
+            今天想推荐的，是《{{book_name}}》。
+
+            最近重读《{{book_name}}》，我发现它真正打动人的地方不是……
+
+            如果你也正在被……困住，可以翻开《{{book_name}}》。
+
+            正文中至少自然出现 3 次书名：
+
+            开头 1 次：明确告诉读者推荐的是哪本书；
+
+            中段 1 次：回到书中观点或阅读感受；
+
+            结尾 1 次：自然收束推荐理由。
+
+            不要机械重复书名。第一次出现用完整书名，后面可以交替使用：
+
+            《{{book_name}}》
+
+            这本书
+
+            书里
+
+            作者在书中提醒我们
+
+            不要把书名生硬塞进句子里。书名出现的位置应该服务于推荐逻辑：
+
+            引出推荐对象；
+
+            承接书中观点；
+
+            总结适合谁读。
+
+            如果当前书名已经带有书名号，不要重复添加书名号；如果没有书名号，输出时使用《{{book_name}}》。
+
+
+            【输出格式】
+
+            请严格按照以下结构输出：
+
+
+            一、公众号标题
+
+            给出 6 个标题。
+
+            要求：
+
+            - 标题要具体，有问题感或场景感；
+
+            - 不要标题党；
+
+            - 不要夸张承诺；
+
+            - 至少 2 个标题要面向大学生或职场新人。
+
+
+            二、文章摘要
+
+            生成一段 60-80 字摘要。
+
+            要求：说明这本书解决什么问题、适合谁读。
+
+
+            三、封面文案
+
+            生成 3 条封面文案。
+
+            要求：每条不超过 16 个字，适合放在公众号封面图上。
+
+
+            四、正文
+
+
+            1. 开头痛点
+
+            用一个具体场景开头。
+
+            不要直接介绍书。
+
+            先写读者在生活、学习、求职或职场中遇到的真实困扰，再自然引出这本书。
+
+
+            2. 这本书讲了什么
+
+            用通俗语言介绍这本书的核心内容。
+
+            不要写成百科介绍。
+
+            要说明它为什么和“减少内耗、在意评价、讨好别人、自我接纳”等问题有关。
+
+
+            3. 为什么推荐这本书
+
+            结合大学生、应届生和职场新人的处境，说明这本书的现实意义。
+
+            要具体写到：求职、社交、实习、职场反馈、人际关系中的至少 2 个场景。
+
+
+            4. 三个核心启发
+
+
+            请输出 3 个启发，每个启发使用以下自然文章格式：
+
+
+            【启发标题】
+
+
+            第一段：用自然语言解释这个观点，不要出现“解释这个观点是什么”这类提示词原文。
+
+
+            第二段：结合一个大学生、应届生或职场新人的现实场景进行说明。场景要具体，但不要使用“小王”“小李”这类过于模板化的人名。
+
+
+            第三段：给出一个可以尝试的小建议。建议要具体、可执行，但不要写成命令式清单。
+
+
+            注意：
+
+            - 不要把格式说明原样写进正文。
+
+            - 不要使用“解释这个观点是什么”“给出一个可以尝试的小建议”“举一个现实场景”等提示词原文。
+
+            - 每个启发控制在 180-260 字。
+
+            - 三个启发之间要有明显差异，不要反复表达同一个意思。
+
+
+            5. 适合哪些人读
+
+            用 4-6 条简短句子列出适合人群。
+
+
+            6. 一句话总结
+
+            用一句自然、有记忆点的话总结这本书的价值。
+
+            不要夸张，不要鸡汤。
+
+
+            7. 互动问题
+
+            提出一个适合放在文末的问题，引导读者留言。
+
+            问题要具体，不要太空。'
+        - id: 938ed29a-0a66-4c8b-aefa-04fd64657d0a
+          role: user
+          text: '请根据以下书籍信息生成微信公众号推文：
+
+            {{#1782657263281.book_info#}}//'
+        selected: false
+        title: 推文生成
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1782657765695'
+      position:
+        x: 342
+        y: 28.5
+      positionAbsolute:
+        x: 342
+        y: 28.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        outputs:
+        - value_selector:
+          - '1782657765695'
+          - text
+          value_type: string
+          variable: article
+        - value_selector:
+          - '1782658797818'
+          - text
+          value_type: string
+          variable: review
+        - value_selector:
+          - '1782659387012'
+          - text
+          value_type: string
+          variable: final_article
+        selected: false
+        title: 输出
+        type: end
+      height: 139
+      id: '1782658294078'
+      position:
+        x: 1365
+        y: 46
+      positionAbsolute:
+        x: 1365
+        y: 46
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            max_tokens: 1900
+            temperature: 0.2
+            top_p: 0.81
+          mode: chat
+          name: deepseek-v4-flash
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: e3c77f0e-39ca-4bc1-8df0-ec8734ce8a78
+          role: system
+          text: '你是一名微信公众号内容审核编辑，负责检查读书推荐类公众号文章是否适合发布。
+
+
+            你的任务是：根据上一个节点生成的公众号推文，进行内容质量、事实风险、版权风险和发布风险审核。
+
+
+            【审核标准】
+
+
+            一、标题审核
+
+            检查标题是否存在以下问题：
+
+            1. 是否标题党；
+
+            2. 是否过度承诺；
+
+            3. 是否使用夸张词，例如“必读”“逆袭”“彻底改变人生”“封神”“人生答案”；
+
+            4. 是否足够具体，能否吸引大学生、应届生和职场新人。
+
+
+            二、内容质量审核
+
+            检查正文是否存在以下问题：
+
+            1. 是否空泛；
+
+            2. 是否像百科介绍；
+
+            3. 是否像广告；
+
+            4. 是否缺少具体场景；
+
+            5. 是否缺少可执行建议；
+
+            6. 是否结构混乱；
+
+            7. 是否重复表达过多；
+
+            8. 是否出现“小王”“小李”“小明”等模板化人物案例；
+
+            9. 是否出现提示词残留，例如“解释这个观点是什么”“给出一个可以尝试的小建议”。
+
+
+            三、事实风险审核
+
+            检查文章是否存在以下问题：
+
+            1. 是否编造书中不存在的情节；
+
+            2. 是否编造作者经历、奖项、销量、读者反馈；
+
+            3. 是否把未经确认的信息写成确定事实；
+
+            4. 是否存在明显不准确表述。
+
+
+            四、版权风险审核
+
+            检查文章是否存在以下问题：
+
+            1. 是否大段引用原书内容；
+
+            2. 是否像原书内容摘抄；
+
+            3. 是否使用过长原文句子；
+
+            4. 是否需要提醒人工核对引用。
+
+
+            五、公众号发布建议
+
+            判断这篇文章当前是否适合发布。
+
+
+            【输出要求】
+
+            请严格按照以下格式输出：
+
+
+            审核结论：通过 / 需修改 / 不建议发布
+
+
+            主要问题：
+
+            1.
+
+            2.
+
+            3.
+
+
+            具体修改建议：
+
+            1.
+
+            2.
+
+            3.
+
+
+            推荐标题：
+
+            从原文标题中选择 1 个最适合发布的标题；如果原文标题都不够好，请重新给出 1 个更合适的标题。
+
+
+            发布前人工检查项：
+
+            1.
+
+            2.
+
+            3.'
+        - id: e7bcd6b2-65d6-4b30-8aab-e6bd37502df8
+          role: user
+          text: '请审核以下公众号推文：
+
+            {{#1782657765695.text#}}'
+        selected: false
+        title: 内容质量审核
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1782658797818'
+      position:
+        x: 683
+        y: 43
+      positionAbsolute:
+        x: 683
+        y: 43
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        model:
+          completion_params:
+            max_tokens: 3500
+            temperature: 0.6
+            top_p: 0.91
+          mode: chat
+          name: deepseek-v4-flash
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: ef2710f8-b34a-4700-8c6d-9e01eb2c5adb
+          role: system
+          text: "你是一名公众号读书博主，擅长把一本书写成有温度、有代入感、适合普通读者阅读的公众号文章。\n\n你的任务不是写读书笔记，也不是写论文式书评，而是把前面生成的内容改写成一篇真正适合发布到公众号的读书推荐文章。\n\
+            \n请严格保留以下输出字段：\n【最终标题】\n【文章摘要】\n【封面文案】\n【公众号正文】\n【发布前检查】\n\n其中【公众号正文】必须满足以下要求：\n\
+            \n1. 不要使用“开头痛点”“这本书讲了什么”“为什么推荐这本书”“三个核心启发”“适合哪些人读”“一句话总结”“互动问题”这类模板化小标题。\n\
+            2. 文章要像一个真实的人在和读者聊天，而不是像课程讲义、论文、报告或知识总结。\n3. 开头必须从一个具体生活场景切入，可以是深夜反复想别人一句话、面试失败后的自我怀疑、朋友圈无人点赞后的失落、职场中被领导否定后的内耗等。\n\
+            4. 语言要自然、温和、有陪伴感，不要过度鸡血，不要说教。\n5. 可以保留少量小标题，但小标题要像公众号文章里的自然分隔，例如：\n  \
+            \ - 你以为是在反省，其实是在消耗自己\n   - 真正让人累的，不是事情本身\n   - 把别人的课题还给别人\n   不要用“启发一、启发二、启发三”。\n\
+            6. 每段控制在 2 到 4 行左右，不要出现大段密集文字。\n7. 允许使用少量加粗强调，重点句使用 **加粗**，全文加粗 5 到 8\
+            \ 处即可。\n8. 可以引用书中的核心观点，但不要大段照抄原文。若引用原句，必须短句化；更多时候用自己的话转述。\n9. 内容要围绕一个主线展开，不要堆砌太多大学、职场、恋爱、社交案例。可以选择\
+            \ 1 到 2 个最有共鸣的场景讲透。\n10. 结尾不要像报告总结，要像公众号作者对读者说的一段话，可以自然引导评论互动。\n\n【输出前自检】\n\
+            在输出最终结果前，请检查【公众号正文】是否满足以下条件：\n正文前 150 字内是否出现了当前书名；\n正文是否至少自然出现 3 次当前书名；\n\
+            是否存在书名和内容不一致的问题；\n是否误写成其他书籍、其他作者或其他核心观点；\n是否出现大量“这本书”“它”但读者不知道具体是哪本书的情况。\n\
+            如果不满足，请先自行修改正文，再输出最终结果。\n最终输出中不要展示自检过程，只输出规定字段。\n文风参考：\n- 温暖但不油腻\n- 犀利但不攻击\n\
+            - 有生活感\n- 有个人表达\n- 适合大学生、初入职场新人、容易精神内耗的人阅读\n\n禁止出现：\n- 本文将从以下几个方面展开\n\
+            - 首先、其次、最后\n- 综上所述\n- 该书具有重要意义\n- 本书告诉我们\n- 通过阅读本书，我们可以\n- 开头痛点\n- 三个核心启发\n\
+            - 一句话总结\n- 互动问题\n\n请基于已有内容进行深度润色，而不是简单扩写。\n只输出最终结果，不要输出解释。"
+        - id: a4059aab-1f9c-416e-824f-7630d9f76095
+          role: user
+          text: '请根据以下原始推文和审核意见，输出修改后的最终公众号推文。
+
+
+            【原始推文】
+
+            {{#1782657765695.text#}}
+
+
+            【审核意见】
+
+            {{#1782658797818.text#}}'
+        selected: false
+        title: 推文优化修改
+        type: llm
+        vision:
+          enabled: false
+      height: 87
+      id: '1782659387012'
+      position:
+        x: 1024
+        y: 57.5
+      positionAbsolute:
+        x: 1024
+        y: 57.5
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 241
+    viewport:
+      x: 210.66171670929634
+      y: 238.67972494255685
+      zoom: 0.5743491774985174
+  rag_pipeline_variables: []

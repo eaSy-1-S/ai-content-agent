@@ -1,0 +1,13 @@
+.env
+*.env
+__pycache__/
+*.pyc
+.vscode/
+.idea/
+*.log
+logs/
+temp/
+tmp/
+secret/
+private/
+output/
